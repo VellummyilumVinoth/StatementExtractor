@@ -1,0 +1,12 @@
+count ,    int count = getCount();
+
+countries ,    string[] countries = getCountryList();
+
+salaries ,    int[] salaries = [100,300,400];
+
+tuple ,    [string, int] tuple = ["john", 20];
+
+personName ,    string personName = "John Smith";
+
+i ,    int i = 0;
+

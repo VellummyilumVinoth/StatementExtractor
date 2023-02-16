@@ -45,7 +45,7 @@ public class Main {
 //        } catch (IOException e) {
 //            System.out.println("Error reading file: " + e.getMessage());
 //        }
-  }
+    }
 
     static class StatementVisitor extends NodeVisitor {
         private List<String> variableNames = new ArrayList<>();
@@ -67,6 +67,7 @@ public class Main {
                 variableNames.add(statementSourceCode);
             }
         }
+
         /**
          * Returns the parent statement node of the given token
          *
