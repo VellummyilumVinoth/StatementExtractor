@@ -8,6 +8,11 @@ tuple ,    [string, int] tuple = ["john", 20];
 
 person ,    Person person = {id: 123, fname: "Jhon", lname: "Doe"};
 
+employees ,    table<Employee> key(id) employees = table [
+        {id: 1, firstName: "John", lastName: "Smith", salary: 100},
+        {id: 2, firstName: "Fred", lastName: "Bloggs", salary: 200}
+    ];
+
 personId,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
 personFname,    Person {id: personId, fname: personFname, lname: personLname} = person;
