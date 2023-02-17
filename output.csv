@@ -1,4 +1,24 @@
+count ,    int count = getCount();
+
+countries ,    string[] countries = getCountryList();
+
+salaries ,    int[] salaries = [100, 300, 400];
+
+tuple ,    [string, int] tuple = ["john", 20];
+
+person ,    Person person = {id: 123, fname: "Jhon", lname: "Doe"};
+
 {id: personId, fname: personFname, lname: personLname} ,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
 {id, fname, lname} ,    Person {id, fname, lname} = person;
+
+personName ,    string personName = "John Smith";
+
+r ,    float r = 0.0;
+
+i ,    foreach int i in 0 ..< v.length() {
+        r += v[i];
+    }
+
+i ,    int i = 0;
 
