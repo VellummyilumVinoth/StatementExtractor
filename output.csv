@@ -1,12 +1,4 @@
-count ,    int count = getCount();
+{id: personId, fname: personFname, lname: personLname} ,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
-countries ,    string[] countries = getCountryList();
-
-salaries ,    int[] salaries = [100,300,400];
-
-tuple ,    [string, int] tuple = ["john", 20];
-
-personName ,    string personName = "John Smith";
-
-i ,    int i = 0;
+{id, fname, lname} ,    Person {id, fname, lname} = person;
 
