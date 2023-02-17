@@ -68,23 +68,6 @@ public class Main {
             }
         }
 
-        @Override
-        public void visit(MappingBindingPatternNode node){
-            Token variableToken = node.closeBrace();
-            String variableLabel = node.toSourceCode();
-
-            System.out.println(variableLabel);
-            variableLabels.add(variableLabel);
-
-            StatementNode parentStatement = getParentStatement(variableToken);
-
-            if (parentStatement != null) {
-                String statementSourceCode = parentStatement.toSourceCode();
-                System.out.println(statementSourceCode);
-                variableNames.add(statementSourceCode);
-            }
-        }
-
         /**
          * Returns the parent statement node of the given token
          *

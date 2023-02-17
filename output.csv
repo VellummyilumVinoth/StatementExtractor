@@ -8,9 +8,11 @@ tuple ,    [string, int] tuple = ["john", 20];
 
 person ,    Person person = {id: 123, fname: "Jhon", lname: "Doe"};
 
-{id: personId, fname: personFname, lname: personLname} ,    Person {id: personId, fname: personFname, lname: personLname} = person;
+personId,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
-{id, fname, lname} ,    Person {id, fname, lname} = person;
+personFname,    Person {id: personId, fname: personFname, lname: personLname} = person;
+
+personLname,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
 personName ,    string personName = "John Smith";
 
