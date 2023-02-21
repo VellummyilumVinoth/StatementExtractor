@@ -31,20 +31,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
-
-//        try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
-//            String line;
-//            StatementVisitor visitor = null;
-//            while ((line = br.readLine()) != null) {
-//                TextDocument textDocument = TextDocuments.from(line);
-//                SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
-//                visitor = new StatementVisitor();
-//                syntaxTree.rootNode().accept(visitor);
-//            }
-//            visitor.writeToCSV("output.csv");
-//        } catch (IOException e) {
-//            System.out.println("Error reading file: " + e.getMessage());
-//        }
     }
 
     static class StatementVisitor extends NodeVisitor {
@@ -68,6 +54,23 @@ public class Main {
             }
         }
 
+//        @Override
+//        public void visit(CaptureBindingPatternNode node) {
+//            Token variableToken = node.variableName();
+//            String variableLabel = variableToken.toSourceCode();
+//
+//            System.out.println(variableLabel);
+//            variableLabels.add(variableLabel);
+//
+//            Node parent = node.parent();
+//            if (parent instanceof VariableDeclarationNode) {
+//                VariableDeclarationNode variableDeclaration = (VariableDeclarationNode) parent;
+//                String statementSourceCode = variableDeclaration.toSourceCode();
+//                System.out.println(statementSourceCode);
+//                variableNames.add(statementSourceCode);
+//            }
+//        }
+
         /**
          * Returns the parent statement node of the given token
          *
@@ -89,7 +92,7 @@ public class Main {
             try {
                 FileWriter writer = new FileWriter(new File(fileName));
 
-                for (int i = 0; i < variableLabels.size(); i++) {
+                for (int i = 0; i < variableLabels.size()-1; i++) {
                     String variableLabel = variableLabels.get(i);
                     String statementSourceCode = variableNames.get(i);
                     writer.write(variableLabel + "," + statementSourceCode + "\n");

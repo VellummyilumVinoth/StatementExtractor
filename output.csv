@@ -1,29 +1,28 @@
-count ,    int count = getCount();
+salaries ,    int count = getCount();
 
-countries ,    string[] countries = getCountryList();
+count ,    string[] countries = getCountryList();
 
-salaries ,    int[] salaries = [100, 300, 400];
+countries ,   
+    [string, int] tuple = ["john", 20];
 
-tuple ,    [string, int] tuple = ["john", 20];
+tuple ,    Person person = {id: 123, fname: "Jhon", lname: "Doe"};
 
-person ,    Person person = {id: 123, fname: "Jhon", lname: "Doe"};
-
-employees ,    table<Employee> key(id) employees = table [
+person ,    table<Employee> key(id) employees = table [
         {id: 1, firstName: "John", lastName: "Smith", salary: 100},
         {id: 2, firstName: "Fred", lastName: "Bloggs", salary: 200}
     ];
+
+employees ,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
 personId,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
 personFname,    Person {id: personId, fname: personFname, lname: personLname} = person;
 
-personLname,    Person {id: personId, fname: personFname, lname: personLname} = person;
+personLname,    string personName = "John Smith";
 
-personName ,    string personName = "John Smith";
+personName ,    float r = 0.0;
 
-r ,    float r = 0.0;
-
-i ,    foreach int i in 0 ..< v.length() {
+r ,    foreach int i in 0 ..< v.length() {
         r += v[i];
     }
 
