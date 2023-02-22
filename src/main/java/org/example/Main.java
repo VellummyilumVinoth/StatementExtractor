@@ -23,6 +23,8 @@ public class Main {
         try {
             // Use try-with-resources to automatically close file stream
             String fileContent = Files.readString(filePath);
+            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
+            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
             TextDocument textDocument = TextDocuments.from(fileContent);
             SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
             StatementVisitor visitor = new StatementVisitor();
@@ -42,34 +44,19 @@ public class Main {
             Token variableToken = node.variableName();
             String variableLabel = variableToken.toSourceCode();
 
-            System.out.println(variableLabel);
-            variableLabels.add(variableLabel);
+            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
+            variableLabels.add(variableLabel.trim());
+            System.out.println(variableLabel.trim());
 
             StatementNode parentStatement = getParentStatement(variableToken);
 
             if (parentStatement != null) {
                 String statementSourceCode = parentStatement.toSourceCode();
-                System.out.println(statementSourceCode);
-                variableNames.add(statementSourceCode);
+                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+                System.out.println(statementSourceCode.trim());
+                variableNames.add(statementSourceCode.trim());
             }
         }
-
-//        @Override
-//        public void visit(CaptureBindingPatternNode node) {
-//            Token variableToken = node.variableName();
-//            String variableLabel = variableToken.toSourceCode();
-//
-//            System.out.println(variableLabel);
-//            variableLabels.add(variableLabel);
-//
-//            Node parent = node.parent();
-//            if (parent instanceof VariableDeclarationNode) {
-//                VariableDeclarationNode variableDeclaration = (VariableDeclarationNode) parent;
-//                String statementSourceCode = variableDeclaration.toSourceCode();
-//                System.out.println(statementSourceCode);
-//                variableNames.add(statementSourceCode);
-//            }
-//        }
 
         /**
          * Returns the parent statement node of the given token
@@ -92,9 +79,12 @@ public class Main {
             try {
                 FileWriter writer = new FileWriter(new File(fileName));
 
-                for (int i = 0; i < variableLabels.size()-1; i++) {
-                    String variableLabel = variableLabels.get(i);
-                    String statementSourceCode = variableNames.get(i);
+                for (int i = 0; i <= variableLabels.size() ; i++) {
+                    if (i >= variableNames.size()) {
+                        break;
+                    }
+                    String variableLabel = variableLabels.get(i).trim();
+                    String statementSourceCode = variableNames.get(i).trim();
                     writer.write(variableLabel + "," + statementSourceCode + "\n");
                 }
 
