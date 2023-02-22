@@ -58,12 +58,6 @@ public class Main {
             }
         }
 
-        /**
-         * Returns the parent statement node of the given token
-         *
-         * @param token the token to find the parent statement for
-         * @return the parent statement node
-         */
         private StatementNode getParentStatement(Token token) {
             NonTerminalNode parent = token.parent();
             while (!(parent instanceof StatementNode)) {
