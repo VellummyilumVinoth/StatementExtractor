@@ -58,6 +58,64 @@ public class Main {
             }
         }
 
+        @Override
+        public void visit(ConstantDeclarationNode node) {
+            Token constantToken = node.variableName();
+            String variableLabel = constantToken.toSourceCode();
+
+            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
+            variableLabels.add(variableLabel.trim());
+            System.out.println(variableLabel.trim());
+
+//            Node initializer = node.initializer();
+//            if (initializer instanceof ExpressionStatementNode) {
+//                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
+//                ExpressionNode expressionNode = expressionStatementNode.expression();
+//                String statementSourceCode = expressionNode.toSourceCode();
+//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+//                System.out.println(statementSourceCode.trim());
+//                variableNames.add(statementSourceCode.trim());
+//            }
+
+            StatementNode parentStatement = getParentStatement(constantToken);
+
+            if (parentStatement != null) {
+                String statementSourceCode = parentStatement.toSourceCode();
+                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+                System.out.println(statementSourceCode.trim());
+                variableNames.add(statementSourceCode.trim());
+            }
+        }
+
+//        @Override
+//        public void visit(ModuleVariableDeclarationNode node) {
+//            Token moduleToken = node.variableName();
+//            String variableLabel = moduleToken.toSourceCode();
+//
+//            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
+//            variableLabels.add(variableLabel.trim());
+//            System.out.println(variableLabel.trim());
+//
+//            Node initializer = node.initializer();
+//            if (initializer instanceof ExpressionStatementNode) {
+//                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
+//                ExpressionNode expressionNode = expressionStatementNode.expression();
+//                String statementSourceCode = expressionNode.toSourceCode();
+//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+//                System.out.println(statementSourceCode.trim());
+//                variableNames.add(statementSourceCode.trim());
+//            }
+//
+//            StatementNode parentStatement = getParentStatement(constantToken);
+//
+//            if (parentStatement != null) {
+//                String statementSourceCode = parentStatement.toSourceCode();
+//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+//                System.out.println(statementSourceCode.trim());
+//                variableNames.add(statementSourceCode.trim());
+//            }
+//        }
+
         private StatementNode getParentStatement(Token token) {
             NonTerminalNode parent = token.parent();
             while (!(parent instanceof StatementNode)) {
