@@ -67,71 +67,58 @@ public class Main {
             variableLabels.add(variableLabel.trim());
             System.out.println(variableLabel.trim());
 
-//            Node initializer = node.initializer();
-//            if (initializer instanceof ExpressionStatementNode) {
-//                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
-//                ExpressionNode expressionNode = expressionStatementNode.expression();
-//                String statementSourceCode = expressionNode.toSourceCode();
-//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-//                System.out.println(statementSourceCode.trim());
-//                variableNames.add(statementSourceCode.trim());
-//            }
-
-            StatementNode parentStatement = getParentStatement(constantToken);
-
-            if (parentStatement != null) {
-                String statementSourceCode = parentStatement.toSourceCode();
+            Node initializer = node.initializer();
+            if (initializer instanceof ExpressionStatementNode) {
+                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
+                ExpressionNode expressionNode = expressionStatementNode.expression();
+                String statementSourceCode = expressionNode.toSourceCode();
                 statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
                 System.out.println(statementSourceCode.trim());
                 variableNames.add(statementSourceCode.trim());
             }
+
+//            Node typeDescriptorNode = node.initializer();
+//
+//            if (typeDescriptorNode != null) {
+//                String typeDescriptorSourceCode = typeDescriptorNode.toSourceCode();
+//                typeDescriptorSourceCode = typeDescriptorSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+//                System.out.println(typeDescriptorSourceCode.trim());
+//                variableNames.add("const " + constantToken + typeDescriptorSourceCode.trim());
+//            }
         }
 
-//        @Override
-//        public void visit(ModuleVariableDeclarationNode node) {
-//            Token moduleToken = node.variableName();
-//            String variableLabel = moduleToken.toSourceCode();
-//
-//            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-//            variableLabels.add(variableLabel.trim());
-//            System.out.println(variableLabel.trim());
-//
-//            Node initializer = node.initializer();
-//            if (initializer instanceof ExpressionStatementNode) {
-//                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
-//                ExpressionNode expressionNode = expressionStatementNode.expression();
-//                String statementSourceCode = expressionNode.toSourceCode();
-//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-//                System.out.println(statementSourceCode.trim());
-//                variableNames.add(statementSourceCode.trim());
-//            }
-//
-//            StatementNode parentStatement = getParentStatement(constantToken);
-//
-//            if (parentStatement != null) {
-//                String statementSourceCode = parentStatement.toSourceCode();
-//                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-//                System.out.println(statementSourceCode.trim());
-//                variableNames.add(statementSourceCode.trim());
-//            }
-//        }
+        @Override
+        public void visit(TypeDefinitionNode node) {
+            Token variableToken = node.typeName();
+            String variableLabel = variableToken.toSourceCode();
+
+            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
+            variableLabels.add(variableLabel.trim());
+            System.out.println(variableLabel.trim());
+
+            TypeDescriptorNode typeDescriptorNode = (TypeDescriptorNode) node.typeDescriptor();
+
+            if (typeDescriptorNode != null) {
+                String typeDescriptorSourceCode = typeDescriptorNode.toSourceCode();
+                typeDescriptorSourceCode = typeDescriptorSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+                System.out.println("type " + variableToken + typeDescriptorSourceCode.trim());
+                variableNames.add("type " + variableToken + typeDescriptorSourceCode.trim());
+            }
+        }
 
         private StatementNode getParentStatement(Token token) {
             NonTerminalNode parent = token.parent();
-            while (!(parent instanceof StatementNode)) {
+            while (parent != null && !(parent instanceof StatementNode)) {
                 parent = parent.parent();
-                if (parent == null) {
-                    return null;
-                }
             }
             return (StatementNode) parent;
         }
-
+        
         private void writeToCSV(String fileName) {
             try {
                 FileWriter writer = new FileWriter(new File(fileName));
 
-                for (int i = 0; i <= variableLabels.size() ; i++) {
+                for (int i = 0; i < variableLabels.size() ; i++) {
                     if (i >= variableNames.size()) {
                         break;
                     }

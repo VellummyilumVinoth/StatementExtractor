@@ -1,9 +1,14 @@
-salaries,foreach var s in sv { io:println(s); }
-LENGTH,int sum = x + y;
-MAX_VALUE,int[3] numbers = [1, 2, 3];
-URL,string[LENGTH] animals = ["cat", "dog", "mouse"];
-msg,int[] indexes = [1, 2];
-x,string[*] colors = ["red", "green", "blue"];
+salaries,type Person record { int id; string fname; string lname; }
+LENGTH,type Coord record { float x; float y; }
+MAX_VALUE,type StructuredName record { string firstName; string lastName; }
+URL,type Name StructuredName|string
+msg,type MapArray map<string>[]
+x,foreach var s in sv { io:println(s); }
+Person,int sum = x + y;
+Coord,int[3] numbers = [1, 2, 3];
+StructuredName,string[LENGTH] animals = ["cat", "dog", "mouse"];
+Name,int[] indexes = [1, 2];
+MapArray,string[*] colors = ["red", "green", "blue"];
 y,string firstColor = colors[0];
 s,string[] names = ["Mike", "Amy", "Korina"];
 sum,int length = names.length();
@@ -69,7 +74,11 @@ numsReversed,string[] s1 = [y, y];
 num,Engineer engineer = new Engineer("Alice");
 languageName,string engineerName = engineer.getName();
 newName,string str = check string
-char,string personName = "John Smith";
-name1,float r = 0.0;
-name2,foreach int i in 0 ..< v.length() { r += v[i]; }
-s1,int i = 0;
+char,type PersonArray Person[]
+name1,type Building record {| readonly string buildingCode; string city; string state; string country; string postalCode; Workspace[] workspaces; |}
+name2,type Workspace record {| readonly string workspaceId; string workspaceType; Building location; Employee employee; |}
+s1,type Employee record {| readonly int id; string firstName; string lastName; int salary; |}
+engineer,string personName = "John Smith";
+engineerName,float r = 0.0;
+,foreach int i in 0 ..< v.length() { r += v[i]; }
+str,int i = 0;
