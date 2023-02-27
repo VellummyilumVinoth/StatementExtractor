@@ -42,6 +42,29 @@ public class Main {
         }
     }
 
+//    public static void main(String[] args) {
+//        Path filePath = Paths.get("/home/vinoth/greeter/main.bal");
+//
+//        if (filePath == null || filePath.toString().isEmpty()) {
+//            System.out.println("File path is empty. Please provide a valid path");
+//            return;
+//        }
+//
+//        try {
+//            // Use try-with-resources to automatically close file stream
+//            String fileContent = Files.readString(filePath);
+//            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
+//            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
+//            TextDocument textDocument = TextDocuments.from(fileContent);
+//            SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
+//            StatementVisitor visitor = new StatementVisitor();
+//            syntaxTree.rootNode().accept(visitor);
+//            visitor.writeToCSV("output.csv");
+//        } catch (IOException e) {
+//            System.out.println("Error reading file: " + e.getMessage());
+//        }
+//    }
+
     static class StatementVisitor extends NodeVisitor{
         private List<String> variableNames = new ArrayList<>();
         private List<String> variableLabels = new ArrayList<>();
@@ -81,13 +104,13 @@ public class Main {
 
             visitSyntaxNode(variableDeclarationNode.typedBindingPattern());
 
-            String variableLabel = variableDeclarationNode.toSourceCode();
-
-            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
-                variableLabels.add(variableLabel.trim());
-                System.out.println(variableLabel.trim());
-            }
+//            String variableLabel = variableDeclarationNode.toSourceCode();
+//
+//            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
+//            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
+//                variableLabels.add(variableLabel.trim());
+//                System.out.println(variableLabel.trim());
+//            }
 
             isInsideLocalVar = false;
         }
