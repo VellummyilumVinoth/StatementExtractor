@@ -13,97 +13,83 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Path filePath = Paths.get("/home/vinoth/greeter/main.bal");
+        Path dirPath = Paths.get("/home/vinoth/Documents/nballerina-main");
 
-        if (filePath == null || filePath.toString().isEmpty()) {
-            System.out.println("File path is empty. Please provide a valid path");
+        if (dirPath == null || !Files.isDirectory(dirPath)) {
+            System.out.println("Directory path is empty or invalid. Please provide a valid path");
             return;
         }
 
         try {
-            // Use try-with-resources to automatically close file stream
-            String fileContent = Files.readString(filePath);
-            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
-            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
-            TextDocument textDocument = TextDocuments.from(fileContent);
-            SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
-            StatementVisitor visitor = new StatementVisitor();
-            syntaxTree.rootNode().accept(visitor);
-            visitor.writeToCSV("output.csv");
+            Files.walk(dirPath)
+                    .filter(path -> path.toString().endsWith(".bal"))
+                    .forEach(filePath -> {
+                        try {
+                            String fileContent = Files.readString(filePath);
+                            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
+                            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
+                            TextDocument textDocument = TextDocuments.from(fileContent);
+                            SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
+                            StatementVisitor visitor = new StatementVisitor();
+                            syntaxTree.rootNode().accept(visitor);
+                            visitor.writeToCSV("output.csv");
+                        } catch (IOException e) {
+                            System.out.println("Error reading file " + filePath + ": " + e.getMessage());
+                        }
+                    });
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            System.out.println("Error walking directory " + dirPath + ": " + e.getMessage());
         }
     }
 
-    static class StatementVisitor extends NodeVisitor {
+    static class StatementVisitor extends NodeVisitor{
         private List<String> variableNames = new ArrayList<>();
         private List<String> variableLabels = new ArrayList<>();
 
+        private boolean isInsideLocalVar;
+
         @Override
         public void visit(CaptureBindingPatternNode node) {
+
+            if(!isInsideLocalVar){
+                return;
+            }
+
             Token variableToken = node.variableName();
             String variableLabel = variableToken.toSourceCode();
 
             variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            variableLabels.add(variableLabel.trim());
-            System.out.println(variableLabel.trim());
+            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
+                variableLabels.add(variableLabel.trim());
+                System.out.println(variableLabel.trim());
 
-            StatementNode parentStatement = getParentStatement(variableToken);
+                StatementNode parentStatement = getParentStatement(variableToken);
 
-            if (parentStatement != null) {
-                String statementSourceCode = parentStatement.toSourceCode();
-                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                System.out.println(statementSourceCode.trim());
-                variableNames.add(statementSourceCode.trim());
+                if (parentStatement != null) {
+                    String statementSourceCode = parentStatement.toSourceCode();
+                    statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+                    System.out.println(statementSourceCode.trim());
+                    variableNames.add(statementSourceCode.trim());
+                }
             }
         }
 
         @Override
-        public void visit(ConstantDeclarationNode node) {
-            Token constantToken = node.variableName();
-            String variableLabel = constantToken.toSourceCode();
+        public void visit(VariableDeclarationNode variableDeclarationNode) {
+
+            isInsideLocalVar = true;
+
+            visitSyntaxNode(variableDeclarationNode.typedBindingPattern());
+
+            String variableLabel = variableDeclarationNode.toSourceCode();
 
             variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            variableLabels.add(variableLabel.trim());
-            System.out.println(variableLabel.trim());
-
-            Node initializer = node.initializer();
-            if (initializer instanceof ExpressionStatementNode) {
-                ExpressionStatementNode expressionStatementNode = (ExpressionStatementNode) initializer;
-                ExpressionNode expressionNode = expressionStatementNode.expression();
-                String statementSourceCode = expressionNode.toSourceCode();
-                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                System.out.println(statementSourceCode.trim());
-                variableNames.add(statementSourceCode.trim());
+            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
+                variableLabels.add(variableLabel.trim());
+                System.out.println(variableLabel.trim());
             }
 
-//            Node typeDescriptorNode = node.initializer();
-//
-//            if (typeDescriptorNode != null) {
-//                String typeDescriptorSourceCode = typeDescriptorNode.toSourceCode();
-//                typeDescriptorSourceCode = typeDescriptorSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-//                System.out.println(typeDescriptorSourceCode.trim());
-//                variableNames.add("const " + constantToken + typeDescriptorSourceCode.trim());
-//            }
-        }
-
-        @Override
-        public void visit(TypeDefinitionNode node) {
-            Token variableToken = node.typeName();
-            String variableLabel = variableToken.toSourceCode();
-
-            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            variableLabels.add(variableLabel.trim());
-            System.out.println(variableLabel.trim());
-
-            TypeDescriptorNode typeDescriptorNode = (TypeDescriptorNode) node.typeDescriptor();
-
-            if (typeDescriptorNode != null) {
-                String typeDescriptorSourceCode = typeDescriptorNode.toSourceCode();
-                typeDescriptorSourceCode = typeDescriptorSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                System.out.println("type " + variableToken + typeDescriptorSourceCode.trim());
-                variableNames.add("type " + variableToken + typeDescriptorSourceCode.trim());
-            }
+            isInsideLocalVar = false;
         }
 
         private StatementNode getParentStatement(Token token) {
@@ -113,7 +99,7 @@ public class Main {
             }
             return (StatementNode) parent;
         }
-        
+
         private void writeToCSV(String fileName) {
             try {
                 FileWriter writer = new FileWriter(new File(fileName));
