@@ -42,30 +42,7 @@ public class Main {
         }
     }
 
-//    public static void main(String[] args) {
-//        Path filePath = Paths.get("/home/vinoth/greeter/main.bal");
-//
-//        if (filePath == null || filePath.toString().isEmpty()) {
-//            System.out.println("File path is empty. Please provide a valid path");
-//            return;
-//        }
-//
-//        try {
-//            // Use try-with-resources to automatically close file stream
-//            String fileContent = Files.readString(filePath);
-//            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
-//            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
-//            TextDocument textDocument = TextDocuments.from(fileContent);
-//            SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
-//            StatementVisitor visitor = new StatementVisitor();
-//            syntaxTree.rootNode().accept(visitor);
-//            visitor.writeToCSV("output.csv");
-//        } catch (IOException e) {
-//            System.out.println("Error reading file: " + e.getMessage());
-//        }
-//    }
-
-    static class StatementVisitor extends NodeVisitor{
+    static class StatementVisitor extends NodeVisitor {
         private List<String> variableNames = new ArrayList<>();
         private List<String> variableLabels = new ArrayList<>();
 
@@ -74,7 +51,7 @@ public class Main {
         @Override
         public void visit(CaptureBindingPatternNode node) {
 
-            if(!isInsideLocalVar){
+            if (!isInsideLocalVar) {
                 return;
             }
 
@@ -82,18 +59,16 @@ public class Main {
             String variableLabel = variableToken.toSourceCode();
 
             variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
-                variableLabels.add(variableLabel.trim());
-                System.out.println(variableLabel.trim());
+            variableLabels.add(variableLabel.trim());
+            System.out.println(variableLabel.trim());
 
-                StatementNode parentStatement = getParentStatement(variableToken);
+            StatementNode parentStatement = getParentStatement(variableToken);
 
-                if (parentStatement != null) {
-                    String statementSourceCode = parentStatement.toSourceCode();
-                    statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                    System.out.println(statementSourceCode.trim());
-                    variableNames.add(statementSourceCode.trim());
-                }
+            if (parentStatement != null) {
+                String statementSourceCode = parentStatement.toSourceCode();
+                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
+                variableNames.add(statementSourceCode.trim());
+                System.out.println(statementSourceCode.trim());
             }
         }
 
@@ -103,14 +78,6 @@ public class Main {
             isInsideLocalVar = true;
 
             visitSyntaxNode(variableDeclarationNode.typedBindingPattern());
-
-//            String variableLabel = variableDeclarationNode.toSourceCode();
-//
-//            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-//            if (!variableLabels.contains(variableLabel.trim())) { // check if label already exists
-//                variableLabels.add(variableLabel.trim());
-//                System.out.println(variableLabel.trim());
-//            }
 
             isInsideLocalVar = false;
         }
@@ -125,9 +92,9 @@ public class Main {
 
         private void writeToCSV(String fileName) {
             try {
-                FileWriter writer = new FileWriter(new File(fileName));
+                FileWriter writer = new FileWriter(new File(fileName),true);
 
-                for (int i = 0; i < variableLabels.size() ; i++) {
+                for (int i = 0; i < variableLabels.size(); i++) {
                     if (i >= variableNames.size()) {
                         break;
                     }
