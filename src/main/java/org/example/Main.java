@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -92,7 +94,8 @@ public class Main {
 
         private void writeToCSV(String fileName) {
             try {
-                FileWriter writer = new FileWriter((fileName),true);
+                FileWriter writer = new FileWriter(fileName, true);
+                Set<String> writtenEntries = new HashSet<>();
 
                 for (int i = 0; i < sourceStatements.size(); i++) {
                     if (i >= variableNames.size()) {
@@ -102,14 +105,14 @@ public class Main {
                     String statementSourceCode = sourceStatements.get(i).trim();
                     String combinedEntry = variableLabel + "," + statementSourceCode;
 
-                    // check if the combined entry already exists in the output.csv file
-                    boolean entryExists = Files.lines(Paths.get(fileName))
-                            .anyMatch(line -> line.trim().equals(combinedEntry));
-
-                    // write the combined entry to the output.csv file only if it doesn't already exist
-                    if (!entryExists) {
-                        writer.write(combinedEntry + "\n");
+                    // check if the combined entry has already been written to the file
+                    if (writtenEntries.contains(combinedEntry)) {
+                        continue;
                     }
+
+                    // write the combined entry to the file
+                    writer.write(combinedEntry + "\n");
+                    writtenEntries.add(combinedEntry);
                 }
 
                 writer.flush();
@@ -119,6 +122,5 @@ public class Main {
                 System.out.println("Error writing to CSV file: " + e.getMessage());
             }
         }
-
     }
 }
