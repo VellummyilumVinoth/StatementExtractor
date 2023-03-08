@@ -92,7 +92,7 @@ public class Main {
 
         private void writeToCSV(String fileName) {
             try {
-                FileWriter writer = new FileWriter(new File(fileName),true);
+                FileWriter writer = new FileWriter((fileName),true);
 
                 for (int i = 0; i < sourceStatements.size(); i++) {
                     if (i >= variableNames.size()) {
@@ -100,7 +100,16 @@ public class Main {
                     }
                     String variableLabel = variableNames.get(i).trim();
                     String statementSourceCode = sourceStatements.get(i).trim();
-                    writer.write(variableLabel + "," + statementSourceCode + "\n");
+                    String combinedEntry = variableLabel + "," + statementSourceCode;
+
+                    // check if the combined entry already exists in the output.csv file
+                    boolean entryExists = Files.lines(Paths.get(fileName))
+                            .anyMatch(line -> line.trim().equals(combinedEntry));
+
+                    // write the combined entry to the output.csv file only if it doesn't already exist
+                    if (!entryExists) {
+                        writer.write(combinedEntry + "\n");
+                    }
                 }
 
                 writer.flush();
@@ -110,5 +119,6 @@ public class Main {
                 System.out.println("Error writing to CSV file: " + e.getMessage());
             }
         }
+
     }
 }
