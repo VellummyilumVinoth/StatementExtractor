@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -94,8 +95,13 @@ public class Main {
 
         private void writeToCSV(String fileName) {
             try {
-                FileWriter writer = new FileWriter(fileName, true);
-                Set<String> writtenEntries = new HashSet<>();
+
+                FileWriter writer = new FileWriter((fileName),true);
+
+                // read existing entries from the output.csv file into a set
+                Set<String> existingEntries = Files.lines(Paths.get(fileName))
+                        .map(String::trim)
+                        .collect(Collectors.toSet());
 
                 for (int i = 0; i < sourceStatements.size(); i++) {
                     if (i >= variableNames.size()) {
@@ -105,14 +111,13 @@ public class Main {
                     String statementSourceCode = sourceStatements.get(i).trim();
                     String combinedEntry = variableLabel + "," + statementSourceCode;
 
-                    // check if the combined entry has already been written to the file
-                    if (writtenEntries.contains(combinedEntry)) {
-                        continue;
+                    // check if the combined entry already exists in the set of existing entries
+                    if (!existingEntries.contains(combinedEntry)) {
+                        // write the combined entry to the output.csv file
+                        writer.write(combinedEntry + "\n");
+                        // add the combined entry to the set of existing entries
+                        existingEntries.add(combinedEntry);
                     }
-
-                    // write the combined entry to the file
-                    writer.write(combinedEntry + "\n");
-                    writtenEntries.add(combinedEntry);
                 }
 
                 writer.flush();
