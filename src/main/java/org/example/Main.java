@@ -44,7 +44,7 @@ public class Main {
 
     static class StatementVisitor extends NodeVisitor {
         private List<String> variableNames = new ArrayList<>();
-        private List<String> variableLabels = new ArrayList<>();
+        private List<String> sourceStatements = new ArrayList<>();
 
         private boolean isInsideLocalVar;
 
@@ -59,7 +59,7 @@ public class Main {
             String variableLabel = variableToken.toSourceCode();
 
             variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            variableLabels.add(variableLabel.trim());
+            variableNames.add(variableLabel.trim());
             System.out.println(variableLabel.trim());
 
             StatementNode parentStatement = getParentStatement(variableToken);
@@ -67,7 +67,7 @@ public class Main {
             if (parentStatement != null) {
                 String statementSourceCode = parentStatement.toSourceCode();
                 statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                variableNames.add(statementSourceCode.trim());
+                sourceStatements.add(statementSourceCode.trim());
                 System.out.println(statementSourceCode.trim());
             }
         }
@@ -94,11 +94,11 @@ public class Main {
             try {
                 FileWriter writer = new FileWriter(new File(fileName),true);
 
-                for (int i = 0; i < variableLabels.size(); i++) {
+                for (int i = 0; i < sourceStatements.size(); i++) {
                     if (i >= variableNames.size()) {
                         break;
                     }
-                    String variableLabel = variableLabels.get(i).trim();
+                    String variableLabel = sourceStatements.get(i).trim();
                     String statementSourceCode = variableNames.get(i).trim();
                     writer.write(variableLabel + "," + statementSourceCode + "\n");
                 }
