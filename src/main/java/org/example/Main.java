@@ -56,19 +56,19 @@ public class Main {
             }
 
             Token variableToken = node.variableName();
-            String variableLabel = variableToken.toSourceCode();
+            String variableName = variableToken.toSourceCode();
 
-            variableLabel = variableLabel.replaceAll("\\s+", " "); // remove unnecessary spaces
-            variableNames.add(variableLabel.trim());
-            System.out.println(variableLabel.trim());
+            variableName = variableName.replaceAll("\\s+", " "); // remove unnecessary spaces
+            variableNames.add(variableName.trim());
+            System.out.println(variableName.trim());
 
             StatementNode parentStatement = getParentStatement(variableToken);
 
             if (parentStatement != null) {
-                String statementSourceCode = parentStatement.toSourceCode();
-                statementSourceCode = statementSourceCode.replaceAll("\\s+", " "); // remove unnecessary spaces
-                sourceStatements.add(statementSourceCode.trim());
-                System.out.println(statementSourceCode.trim());
+                String sourceStatement = parentStatement.toSourceCode();
+                sourceStatement = sourceStatement.replaceAll("\\s+", " "); // remove unnecessary spaces
+                sourceStatements.add(sourceStatement.trim());
+                System.out.println(sourceStatement.trim());
             }
         }
 
@@ -98,13 +98,14 @@ public class Main {
                     if (i >= variableNames.size()) {
                         break;
                     }
-                    String variableLabel = sourceStatements.get(i).trim();
-                    String statementSourceCode = variableNames.get(i).trim();
+                    String variableLabel = variableNames.get(i).trim();
+                    String statementSourceCode = sourceStatements.get(i).trim();
                     writer.write(variableLabel + "," + statementSourceCode + "\n");
                 }
 
                 writer.flush();
                 writer.close();
+
             } catch (IOException e) {
                 System.out.println("Error writing to CSV file: " + e.getMessage());
             }
