@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +95,7 @@ public class Main {
         private void writeToCSV(String fileName) {
             try {
 
-                FileWriter writer = new FileWriter((fileName),true);
+                FileWriter writer = new FileWriter(new File(fileName),true);
 
                 // read existing entries from the output.csv file into a set
                 Set<String> existingEntries = Files.lines(Paths.get(fileName))
@@ -109,7 +108,7 @@ public class Main {
                     }
                     String variableLabel = variableNames.get(i).trim();
                     String statementSourceCode = sourceStatements.get(i).trim();
-                    String combinedEntry = variableLabel + "," + statementSourceCode;
+                    String combinedEntry = variableLabel + ",\"" + statementSourceCode + "\"";
 
                     // check if the combined entry already exists in the set of existing entries
                     if (!existingEntries.contains(combinedEntry)) {
