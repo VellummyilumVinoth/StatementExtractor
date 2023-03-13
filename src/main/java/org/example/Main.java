@@ -49,11 +49,16 @@ public class Main {
         private List<String> sourceStatements = new ArrayList<>();
 
         private boolean isInsideLocalVar;
+        private boolean isListBindingPattern;
 
         @Override
         public void visit(CaptureBindingPatternNode node) {
 
             if (!isInsideLocalVar) {
+                return;
+            }
+
+            if (!isListBindingPattern) {
                 return;
             }
 
@@ -82,6 +87,16 @@ public class Main {
             visitSyntaxNode(variableDeclarationNode.typedBindingPattern());
 
             isInsideLocalVar = false;
+        }
+
+        @Override
+        public void visit(ListBindingPatternNode listBindingPatternNode){
+            isListBindingPattern = false;
+
+            listBindingPatternNode.children().forEach(child -> child.accept(this));
+
+            isListBindingPattern = true;
+
         }
 
         private StatementNode getParentStatement(Token token) {
