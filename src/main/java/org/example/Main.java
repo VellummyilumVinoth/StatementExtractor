@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -136,7 +135,6 @@ public class Main {
 
         @Override
         public void visit(VariableDeclarationNode variableDeclarationNode) {
-
             isInsideLocalVar = true;
 
             visitSyntaxNode(variableDeclarationNode.typedBindingPattern());
@@ -151,7 +149,6 @@ public class Main {
             listBindingPatternNode.children().forEach(child -> child.accept(this));
 
             isListBindingPattern = true;
-
         }
 
         private StatementNode getParentStatement(Token token) {
@@ -179,7 +176,6 @@ public class Main {
                     String variableLabel = variableNames.get(i).trim();
                     String statementSourceCode = sourceStatements.get(i).trim();
                     String combinedEntry = variableLabel + "," + statementSourceCode ;
-
 
                         // check if the combined entry already exists in the set of existing entries
                         if (!existingEntries.contains(combinedEntry)) {
