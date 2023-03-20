@@ -1,5 +1,6 @@
 package org.example;
 
+import com.sun.source.tree.ExpressionStatementTree;
 import io.ballerinalang.compiler.syntax.tree.*;
 import io.ballerinalang.compiler.text.TextDocument;
 import io.ballerinalang.compiler.text.TextDocuments;
@@ -20,7 +21,7 @@ import java.util.zip.ZipInputStream;
 public class Main {
     public static void main(String[] args) {
             try {
-                String baseUrl = "https://github.com/ballerina-platform/ballerina-distribution/archive/refs/heads/master.zip";
+                String baseUrl = "https://github.com/ballerina-platform/nballerina/archive/refs/heads/main.zip";
                 Path savePath = Paths.get("/home/vinoth/Music");
                 String pathString = savePath.toString();
         
@@ -102,12 +103,20 @@ public class Main {
 
             // Check if the right-hand side of the parent statement is a basic literal value
             StatementNode parentStatement = getParentStatement(node.variableName());
-            // if (parentStatement != null && parentStatement instanceof ExpressionStatementNode) {
-            //     ExpressionNode expressionNode = ((ExpressionStatementNode) parentStatement).expression();
-            //     if (expressionNode instanceof BasicLiteralNode) {
-            //         return;
-            //     }
-            // }
+
+            if (parentStatement != null && parentStatement instanceof ExpressionStatementTree) {
+                System.out.println(parentStatement);
+                ExpressionNode expressionNode = ((ExpressionStatementNode) parentStatement).expression();
+                System.out.println(expressionNode);
+
+//                if (expressionNode instanceof BasicLiteralNode) {
+//                    BasicLiteralNode basicLiteralNode = (BasicLiteralNode) expressionNode;
+//                    if (basicLiteralNode.literalToken() == null || basicLiteralNode.literalToken().equals("[]") ||
+//                            basicLiteralNode.literalToken().equals("{}") || basicLiteralNode.literalToken().equals("0")) {
+//                        return;
+//                    }
+//                }
+            }
 
             Token variableToken = node.variableName();
             String variableName = variableToken.toSourceCode();
@@ -115,7 +124,7 @@ public class Main {
             variableName = variableName.replaceAll("\\s+", " "); // remove unnecessary spaces
 
             variableNames.add(variableName.trim());
-            System.out.println(variableName.trim());
+           // System.out.println(variableName.trim());
 
             if (parentStatement != null) {
                 String sourceStatement = parentStatement.toSourceCode();
@@ -127,11 +136,10 @@ public class Main {
                 // }
 
                 sourceStatements.add(sourceStatement.trim());
-                System.out.println(sourceStatement.trim());
+                //System.out.println(sourceStatement.trim());
 
             }
         }
-
 
         @Override
         public void visit(VariableDeclarationNode variableDeclarationNode) {
@@ -174,8 +182,8 @@ public class Main {
                         break;
                     }
                     String variableLabel = variableNames.get(i).trim();
-                    String statementSourceCode = sourceStatements.get(i).trim();
-                    String combinedEntry = variableLabel + "," + statementSourceCode ;
+                    String statementSourceCode = "\"" + sourceStatements.get(i).trim().replace("\"", "\\\"") + "\"";
+                    String combinedEntry = variableLabel + "," + statementSourceCode;
 
                         // check if the combined entry already exists in the set of existing entries
                         if (!existingEntries.contains(combinedEntry)) {
