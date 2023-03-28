@@ -45,7 +45,7 @@ public class Main {
             String pathString = savePath.toString();
 
             for (String baseUrl : baseUrls) {
-                // Download and extract the zip file
+                // Download the repo and extract the zip file
                 URL url = new URL(baseUrl);
                 ZipInputStream zipStream = new ZipInputStream(url.openStream());
                 ZipEntry entry = zipStream.getNextEntry();
