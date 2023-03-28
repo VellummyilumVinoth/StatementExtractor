@@ -1,9 +1,9 @@
 package org.example;
 
 import com.sun.source.tree.ExpressionStatementTree;
-import io.ballerinalang.compiler.syntax.tree.*;
-import io.ballerinalang.compiler.text.TextDocument;
-import io.ballerinalang.compiler.text.TextDocuments;
+import io.ballerina.compiler.syntax.tree.*;
+import io.ballerina.tools.text.TextDocument;
+import io.ballerina.tools.text.TextDocuments;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,11 +21,30 @@ import java.util.zip.ZipInputStream;
 
 public class Main {
     public static void main(String[] args) {
-            try {
-                String baseUrl = "https://github.com/ballerina-platform/nballerina/archive/refs/heads/main.zip";
-                Path savePath = Paths.get("/home/vinoth/Music");
-                String pathString = savePath.toString();
-        
+        try {
+            List<String> baseUrls = Arrays.asList(
+                    "https://github.com/ballerina-platform/nballerina/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/ballerina-distribution/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-guides/gcp-microservices-demo/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-guides/ai-samples/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-guides/ftgo-microservices-example/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-guides/integration-samples/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-guides/azure-functions-demo/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-guides/ballerina-in-action-samples/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-log/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-jwt/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-kafka/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-websubhub/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-graphql/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-websub/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-java.jdbc/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-postgresql/archive/refs/heads/master.zip"
+            );
+            Path savePath = Paths.get("/home/vinoth/Music");
+            String pathString = savePath.toString();
+
+            for (String baseUrl : baseUrls) {
                 // Download and extract the zip file
                 URL url = new URL(baseUrl);
                 ZipInputStream zipStream = new ZipInputStream(url.openStream());
@@ -48,30 +68,31 @@ public class Main {
                 }
                 zipStream.close();
 
-            // continue with the rest of the code
-            Path dirPath = Paths.get(pathString);
+                // Process the downloaded files
+                Path dirPath = Paths.get(pathString);
 
-            if (dirPath == null || !Files.isDirectory(dirPath)) {
-                System.out.println("Directory path is empty or invalid. Please provide a valid path");
-                return;
+                if (dirPath == null || !Files.isDirectory(dirPath)) {
+                    System.out.println("Directory path is empty or invalid. Please provide a valid path");
+                    return;
+                }
+
+                Files.walk(dirPath)
+                        .filter(path -> path.toString().endsWith(".bal"))
+                        .forEach(filePath -> {
+                            try {
+                                String fileContent = Files.readString(filePath);
+                                fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
+                                fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
+                                TextDocument textDocument = TextDocuments.from(fileContent);
+                                SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
+                                StatementVisitor visitor = new StatementVisitor();
+                                syntaxTree.rootNode().accept(visitor);
+                                visitor.writeToCSV();
+                            } catch (Exception e) {
+                                System.out.println("Error reading file " + filePath + ": " + e.getMessage());
+                            }
+                        });
             }
-
-            Files.walk(dirPath)
-                    .filter(path -> path.toString().endsWith(".bal"))
-                    .forEach(filePath -> {
-                        try {
-                            String fileContent = Files.readString(filePath);
-                            fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
-                            fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
-                            TextDocument textDocument = TextDocuments.from(fileContent);
-                            SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
-                            StatementVisitor visitor = new StatementVisitor();
-                            syntaxTree.rootNode().accept(visitor);
-                            visitor.writeToCSV();
-                        } catch (IOException e) {
-                            System.out.println("Error reading file " + filePath + ": " + e.getMessage());
-                        }
-                    });
         } catch (MalformedURLException e) {
             System.out.println("Invalid URL: " + e.getMessage());
         } catch (IOException e) {
@@ -87,8 +108,8 @@ public class Main {
         private boolean isListBindingPattern;
         private static final String OUTPUT_CSV_FILE = "output.csv";
 
-        // private static final Pattern BASIC_LITERAL_PATTERN =
-        //         Pattern.compile("(\\b(nil|true|false|[0-9]+|0x[0-9a-fA-F]+|\".*\"|\\[.*\\]|\\{.*\\}|\\(.*\\))\\b)");
+//         private static final Pattern BASIC_LITERAL_PATTERN =
+//                 Pattern.compile("(\\b(nil|true|false|[0-9]+|0x[0-9a-fA-F]+|\".*\"|\\[.*\\]|\\{.*\\}|\\(.*\\))\\b)");
 
         @Override
         public void visit(CaptureBindingPatternNode node) {
@@ -124,20 +145,19 @@ public class Main {
             variableName = variableName.replaceAll("\\s+", " "); // remove unnecessary spaces
 
             variableNames.add(variableName.trim());
-           // System.out.println(variableName.trim());
+            System.out.println(variableName.trim());
 
             if (parentStatement != null) {
                 String sourceStatement = parentStatement.toSourceCode();
                 sourceStatement = sourceStatement.replaceAll("\\s+", " "); // remove unnecessary spaces
 
                 // skip the processing of the node if the parent statement contains a basic literal value
-                // if (BASIC_LITERAL_PATTERN.matcher(sourceStatement).find()) {
-                //     return;
-                // }
+//                 if (BASIC_LITERAL_PATTERN.matcher(sourceStatement).find()) {
+//                     return;
+//                 }
 
                 sourceStatements.add(sourceStatement.trim());
-                //System.out.println(sourceStatement.trim());
-
+                System.out.println(sourceStatement.trim());
             }
         }
 
@@ -184,6 +204,7 @@ public class Main {
                     String variableLabel = variableNames.get(i).trim();
                     String statementSourceCode = "\"" + sourceStatements.get(i).trim().replace("\"", "\\\"") + "\"";
                     String combinedEntry = variableLabel + "," + statementSourceCode;
+//                    String combinedEntry = statementSourceCode;
 
                         // check if the combined entry already exists in the set of existing entries
                         if (!existingEntries.contains(combinedEntry)) {

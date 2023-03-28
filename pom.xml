@@ -16,7 +16,7 @@
     <repositories>
         <repository>
             <id>github</id>
-            <url>https://maven.wso2.org/nexus/content/repositories/releases</url>
+            <url>https://maven.pkg.github.com/ballerina-platform/ballerina-lang</url>
         </repository>
         <repository>
             <id>jgit-repository</id>
@@ -28,12 +28,12 @@
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>ballerina-parser</artifactId>
-            <version>2.0.0-Preview8.1</version>
+            <version>2201.4.1-20230324-000200-a203fca2</version>
         </dependency>
         <dependency>
             <groupId>org.ballerinalang</groupId>
-            <artifactId>ballerina-parser</artifactId>
-            <version>2.0.0-Preview1</version>
+            <artifactId>ballerina-tools-api</artifactId>
+            <version>2201.4.1-20230324-000200-a203fca2</version>
         </dependency>
         <dependency>
             <groupId>org.pegdown</groupId>
@@ -80,6 +80,5 @@
             <artifactId>gson</artifactId>
             <version>2.9.1</version>
         </dependency>
-
     </dependencies>
 </project>
