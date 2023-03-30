@@ -23,23 +23,38 @@ public class Main {
     public static void main(String[] args) {
         try {
             List<String> baseUrls = Arrays.asList(
-                    "https://github.com/ballerina-platform/nballerina/archive/refs/heads/main.zip",
-                    "https://github.com/ballerina-platform/ballerina-distribution/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-standard-library/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/gcp-microservices-demo/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/ai-samples/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/ftgo-microservices-example/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/integration-samples/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/azure-functions-demo/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/ballerina-in-action-samples/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-java.jdbc/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-grammar/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/nballerina/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/ballerina-distribution/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-grpc/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-github/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-postgresql/archive/refs/heads/master.zip",
+//                    "https://github.com/ballerina-platform/openapi-connectors/archive/refs/heads/main.zip",
+//                    "https://github.com/ballerina-platform/module-ballerina-io/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-nats/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-oauth2/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-mysql/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-twilio/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-slack/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-rabbitmq/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-log/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinai-transaction/archive/refs/heads/master.zip",
+//                    "https://github.com/ballerina-platform/module-ballerinax-sfdc/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-log/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-jwt/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-kafka/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-websubhub/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-platform/module-ballerina-graphql/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-websub/archive/refs/heads/master.zip",
-                    "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip",
-                    "https://github.com/ballerina-platform/module-ballerinax-java.jdbc/archive/refs/heads/master.zip",
-                    "https://github.com/ballerina-platform/module-ballerinax-postgresql/archive/refs/heads/master.zip"
+                    "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip"
             );
             Path savePath = Paths.get("/home/vinoth/Music");
             String pathString = savePath.toString();
