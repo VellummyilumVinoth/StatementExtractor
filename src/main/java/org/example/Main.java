@@ -23,7 +23,17 @@ public class Main {
     public static void main(String[] args) {
         try {
             List<String> baseUrls = Arrays.asList(
-                    "https://github.com/ballerina-platform/ballerina-standard-library/archive/refs/heads/main.zip",
+//                    "https://github.com/ballerina-platform/module-ballerina-io/archive/refs/heads/master.zip",
+//                    "https://github.com/ballerina-platform/module-ballerina-http/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-time/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-crypto/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-persist/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-xmldata/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-uuid/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-url/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-file/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-serdes/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-mssql/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/gcp-microservices-demo/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/ai-samples/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-guides/ftgo-microservices-example/archive/refs/heads/main.zip",
@@ -37,24 +47,22 @@ public class Main {
                     "https://github.com/ballerina-platform/module-ballerina-grpc/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-github/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-postgresql/archive/refs/heads/master.zip",
-//                    "https://github.com/ballerina-platform/openapi-connectors/archive/refs/heads/main.zip",
-//                    "https://github.com/ballerina-platform/module-ballerina-io/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-nats/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-oauth2/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-mysql/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-twilio/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-slack/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-rabbitmq/archive/refs/heads/master.zip",
-                    "https://github.com/ballerina-platform/module-ballerina-log/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinai-transaction/archive/refs/heads/master.zip",
-//                    "https://github.com/ballerina-platform/module-ballerinax-sfdc/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-log/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-jwt/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerinax-kafka/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-websubhub/archive/refs/heads/main.zip",
                     "https://github.com/ballerina-platform/module-ballerina-graphql/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-websub/archive/refs/heads/master.zip",
-                    "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip"
+                    "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-constraint/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/ballerina-spec/archive/refs/heads/master.zip"
             );
             Path savePath = Paths.get("/home/vinoth/Music");
             String pathString = savePath.toString();
@@ -62,26 +70,25 @@ public class Main {
             for (String baseUrl : baseUrls) {
                 // Download the repo and extract the zip file
                 URL url = new URL(baseUrl);
-                ZipInputStream zipStream = new ZipInputStream(url.openStream());
-                ZipEntry entry = zipStream.getNextEntry();
-                while (entry != null) {
-                    Path filePath = Paths.get(pathString, entry.getName());
-                    if (!entry.isDirectory()) {
-                        // Create directories if necessary
-                        Files.createDirectories(filePath.getParent());
-                        // Write the file to disk
-                        FileOutputStream outputStream = new FileOutputStream(filePath.toFile());
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = zipStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
+                try (ZipInputStream zipStream = new ZipInputStream(url.openStream())) {
+                    ZipEntry entry;
+                    byte[] buffer = new byte[4096];
+                    while ((entry = zipStream.getNextEntry()) != null) {
+                        Path filePath = Paths.get(pathString, entry.getName());
+                        if (!entry.isDirectory()) {
+                            // Create directories if necessary
+                            Files.createDirectories(filePath.getParent());
+                            // Write the file to disk
+                            try (FileOutputStream outputStream = new FileOutputStream(filePath.toFile())) {
+                                int bytesRead;
+                                while ((bytesRead = zipStream.read(buffer)) != -1) {
+                                    outputStream.write(buffer, 0, bytesRead);
+                                }
+                            }
                         }
-                        outputStream.close();
+                        zipStream.closeEntry();
                     }
-                    zipStream.closeEntry();
-                    entry = zipStream.getNextEntry();
                 }
-                zipStream.close();
 
                 // Process the downloaded files
                 Path dirPath = Paths.get(pathString);
@@ -221,13 +228,13 @@ public class Main {
                     String combinedEntry = variableLabel + "," + statementSourceCode;
 //                    String combinedEntry = statementSourceCode;
 
-                        // check if the combined entry already exists in the set of existing entries
-                        if (!existingEntries.contains(combinedEntry)) {
-                            // write the combined entry to the output.csv file
-                            writer.write(combinedEntry + "\n");
-                            // add the combined entry to the set of existing entries
-                            existingEntries.add(combinedEntry);
-                        }
+                    // check if the combined entry already exists in the set of existing entries
+                    if (!existingEntries.contains(combinedEntry)) {
+                        // write the combined entry to the output.csv file
+                        writer.write(combinedEntry + "\n");
+                        // add the combined entry to the set of existing entries
+                        existingEntries.add(combinedEntry);
+                    }
                 }
 
                 writer.flush();
