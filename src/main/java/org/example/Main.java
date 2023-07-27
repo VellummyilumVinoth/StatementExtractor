@@ -8,9 +8,7 @@ import io.ballerina.tools.text.TextDocuments;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +21,21 @@ public class Main {
     public static void main(String[] args) {
         try {
             List<String> baseUrls = Arrays.asList(
-//                    "https://github.com/ballerina-platform/module-ballerina-io/archive/refs/heads/master.zip",
-//                    "https://github.com/ballerina-platform/module-ballerina-http/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-twitter/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-oracledb/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-soap/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-mssql.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.dynamodb/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-ai.agent/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.s3/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-azure-cosmosdb/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-toml/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-yaml/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/persist-tools/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-netsuite/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-sfdc/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/openapi-connectors/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-http/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-time/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-crypto/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-persist/archive/refs/heads/main.zip",
@@ -62,10 +73,62 @@ public class Main {
                     "https://github.com/ballerina-platform/module-ballerina-websub/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-cache/archive/refs/heads/master.zip",
                     "https://github.com/ballerina-platform/module-ballerina-constraint/archive/refs/heads/main.zip",
-                    "https://github.com/ballerina-platform/ballerina-spec/archive/refs/heads/master.zip"
+                    "https://github.com/ballerina-platform/ballerina-spec/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-health.fhir.r4/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-regex/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/edi-tools/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-random/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-googleapis.calendar/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-azure-storage-service/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-azure-service-bus/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.onedrive/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/playground/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.sqs/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-mysql.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-peoplehr/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-persist.inmemory/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-persist.googlesheets/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-edi/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-health.fhir.templates/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-health.hl7v2/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-math.vector/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/asyncapi-triggers/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-azure.eventhub/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-oracledb.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-health.clients/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-health.base/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-client.config/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-scim/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/protoc-tools/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-cdata.connect.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-postgresql.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.simpledb/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.sns/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-snowflake.driver/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.onenote/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.outlook.mail/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.outlook.calendar/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.teams/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-googleapis.drive/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-googleapis.people/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-aws.ses/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-azure.ad/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-microsoft.excel/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-lang/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-custom-jre/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/ballerina-lang/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-io/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/openapi-tools/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-dev-website/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-auth/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-udp/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerinax-persist.sql/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/fhir-tools/archive/refs/heads/main.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-tcp/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/ballerina-update-tool/archive/refs/heads/master.zip",
+                    "https://github.com/ballerina-platform/module-ballerina-ftp/archive/refs/heads/master.zip"
             );
             Path savePath = Paths.get("/home/vinoth/Music");
-            String pathString = savePath.toString();
 
             for (String baseUrl : baseUrls) {
                 // Download the repo and extract the zip file
@@ -74,7 +137,7 @@ public class Main {
                     ZipEntry entry;
                     byte[] buffer = new byte[4096];
                     while ((entry = zipStream.getNextEntry()) != null) {
-                        Path filePath = Paths.get(pathString, entry.getName());
+                        Path filePath = savePath.resolve(entry.getName());
                         if (!entry.isDirectory()) {
                             // Create directories if necessary
                             Files.createDirectories(filePath.getParent());
@@ -91,20 +154,12 @@ public class Main {
                 }
 
                 // Process the downloaded files
-                Path dirPath = Paths.get(pathString);
-
-                if (dirPath == null || !Files.isDirectory(dirPath)) {
-                    System.out.println("Directory path is empty or invalid. Please provide a valid path");
-                    return;
-                }
-
-                Files.walk(dirPath)
+                Files.walk(savePath)
                         .filter(path -> path.toString().endsWith(".bal"))
                         .forEach(filePath -> {
                             try {
                                 String fileContent = Files.readString(filePath);
-                                fileContent = fileContent.replaceAll("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/", ""); // remove multi-line comments
-                                fileContent = fileContent.replaceAll("//.*", ""); // remove single-line comments
+                                fileContent = removeComments(fileContent); // Remove comments from the content
                                 TextDocument textDocument = TextDocuments.from(fileContent);
                                 SyntaxTree syntaxTree = SyntaxTree.from(textDocument);
                                 StatementVisitor visitor = new StatementVisitor();
@@ -122,13 +177,23 @@ public class Main {
         }
     }
 
+    // Helper method to remove comments from Ballerina source code
+    private static String removeComments(String content) {
+        // Remove single-line comments (// ...)
+        content = content.replaceAll("//.*", "");
+
+        // Remove multi-line comments (/* ... */)
+        content = content.replaceAll("/\\*.*?\\*/", "");
+
+        return content;
+    }
+
     static class StatementVisitor extends NodeVisitor {
+        private static final String OUTPUT_CSV_FILE = "output.csv";
         private List<String> variableNames = new ArrayList<>();
         private List<String> sourceStatements = new ArrayList<>();
-
         private boolean isInsideLocalVar;
         private boolean isListBindingPattern;
-        private static final String OUTPUT_CSV_FILE = "output.csv";
 
 //         private static final Pattern BASIC_LITERAL_PATTERN =
 //                 Pattern.compile("(\\b(nil|true|false|[0-9]+|0x[0-9a-fA-F]+|\".*\"|\\[.*\\]|\\{.*\\}|\\(.*\\))\\b)");
@@ -193,7 +258,7 @@ public class Main {
         }
 
         @Override
-        public void visit(ListBindingPatternNode listBindingPatternNode){
+        public void visit(ListBindingPatternNode listBindingPatternNode) {
             isListBindingPattern = false;
 
             listBindingPatternNode.children().forEach(child -> child.accept(this));
@@ -212,7 +277,7 @@ public class Main {
         private void writeToCSV() {
             try {
 
-                FileWriter writer = new FileWriter(new File(OUTPUT_CSV_FILE),true);
+                FileWriter writer = new FileWriter(new File(OUTPUT_CSV_FILE), true);
 
                 // read existing entries from the output.csv file into a set
                 Set<String> existingEntries = Files.lines(Paths.get(OUTPUT_CSV_FILE))
@@ -226,7 +291,6 @@ public class Main {
                     String variableLabel = variableNames.get(i).trim();
                     String statementSourceCode = "\"" + sourceStatements.get(i).trim().replace("\"", "\\\"") + "\"";
                     String combinedEntry = variableLabel + "," + statementSourceCode;
-//                    String combinedEntry = statementSourceCode;
 
                     // check if the combined entry already exists in the set of existing entries
                     if (!existingEntries.contains(combinedEntry)) {

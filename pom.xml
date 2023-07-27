@@ -25,10 +25,15 @@
     </repositories>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>org.ballerinalang</groupId>-->
+<!--            <artifactId>ballerina-parser</artifactId>-->
+<!--            <version>2201.4.1-20230324-000200-a203fca2</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.ballerinalang</groupId>
             <artifactId>ballerina-parser</artifactId>
-            <version>2201.4.1-20230324-000200-a203fca2</version>
+            <version>2201.4.3-20230621-002900-8c557369</version>
         </dependency>
         <dependency>
             <groupId>org.ballerinalang</groupId>
